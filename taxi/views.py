@@ -1,3 +1,4 @@
+from django.db.models import Prefetch
 from django.shortcuts import render
 from django.views import generic
 
@@ -39,5 +40,8 @@ class DriverListView(generic.ListView):
 
 class DriverDetailView(generic.DetailView):
     model = Driver
-    queryset = Driver.objects.all()
+    queryset = Driver.objects.prefetch_related(
+        Prefetch("cars",
+                 queryset=Car.objects.select_related("manufacturer"))
+    )
     template_name = "taxi/driver_detail.html"
